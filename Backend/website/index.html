@@ -1,0 +1,184 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Bilicam</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="{{static_url("css/main.css")}}" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+								<a href="/Index" class="logo">
+									<!--<span class="symbol"><img src="images/logo.svg" alt="" /></span>-->
+									<span class="title">Bilicam</span>
+								</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="/Index">Home</a></li>
+							<li><a href="account.html">Account Information</a></li>
+							<!--<li><a href="generic.html">Consequat dolor</a></li>
+							<li><a href="elements.html">Elements</a></li>-->
+							<li><a href="/Logout">Logout</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<section>
+								<form action="javascript:search_patient()" id="search_form">
+									<div class="oneQuarter first field">
+										<select id="search_by" name="Search By">
+											<option value="" disabled selected>Search By</option>
+											<option value="bilirubin">Bilirubin Range</option>
+											<option value="ethnicity">Ethnicity</option>
+											<option value="by_id">ID</option>
+											<option value="by_name">Name</option>
+										</select>
+									</div>
+
+
+									<div class="field half" id="id_search">
+										<input type="text" name="ID" id="ID" placeholder="ID" />
+									</div>
+
+									<div id="name_search">
+										<div class="field oneQuarter">
+											<input type="text" name="first_name" id="first_name" placeholder="First Name" />
+										</div>
+										<div class="field oneQuarter">
+											<input type="text" name="last_name" id="last_name" placeholder="Last Name" />
+										</div>
+									</div>
+
+									<div id="bili_search">
+										<div class="field oneQuarter">
+											<input type="text" name="first_number" id="first_number" placeholder="Min: 0.00" />
+										</div>
+										<div class="field oneQuarter">
+											<input type="text" name="second_number" id="second_number" placeholder="Max: 30.00" />
+										</div>
+									</div>
+
+									<div class="row uniform field half" id="ethnicity_search">
+										<div class="6u 12u$(small)">
+											<input type="checkbox" id="white" name="white">
+											<label for="white">White</label>
+										</div>
+										<div class="6u$ 12u$(small)">
+											<input type="checkbox" id="black" name="black">
+											<label for="black">Black/ African American</label>
+										</div>
+										<div class="6u 12u$(small)">
+											<input type="checkbox" id="asian" name="asian">
+											<label for="asian">Asian</label>
+										</div>
+										<div class="6u$ 12u$(small)">
+											<input type="checkbox" id="hispanic" name="hispanic">
+											<label for="hispanic">Hispanic</label>
+										</div>
+										<div class="6u 12u$(small)">
+											<input type="checkbox" id="indian" name="indian">
+											<label for="indian">American Indian/ Alaskan Native</label>
+										</div>
+										<div class="6u$ 12u$(small)">
+											<input type="checkbox" id="pacific" name="pacific">
+											<label for="pacific">Pacific Islander</label>
+										</div>
+									</div>
+
+
+									<div class="field oneQuarter" id="Submit">
+										<input type="submit" value="Search" class="special" />
+									</div>
+									<!--<div class="field half">
+										<input type="email" name="email" id="email" placeholder="Email" />
+									</div>-->
+									<ul class="actions">
+										<li></li>
+									</ul>
+								</form>
+
+								<!--<div>There are 5 results</div><br>-->
+
+								<div class="table-wrapper threeQuarter first" id="results_table">
+										<table class="alt">
+											<tbody>
+												<tr>
+													<td>ID number</td>
+													<td id="table_id_number"></td>
+												</tr>
+												<tr>
+													<td>First Name</td>
+													<td id="table_first_name"></td>
+												</tr>
+												<tr>
+													<td>Last Name</td>
+													<td id="table_last_name"></td>
+												</tr>
+												<tr>
+													<td>Bilirubin range</td>
+													<td id="table_bili_range"></td>
+												</tr>
+												<tr>
+													<td>Ethnicity</td>
+													<td id="table_ethnicity"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+								<a href="#" class="button special oneQuarter" id="download">Download</a>
+							</section>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>&copy; Bilicam. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="{{static_url("js/jquery.min.js")}}"></script>
+			<script src="{{static_url("js/skel.min.js")}}"></script>
+			<script src="{{static_url("js/util.js")}}"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="{{static_url("js/main.js")}}"></script>
+			<script src="{{static_url("js/bili.js")}}"></script>
+
+	</body>
+</html>

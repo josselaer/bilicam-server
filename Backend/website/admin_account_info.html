@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Bilicam Admin</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="{{static_url("css/main.css")}}" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<div class="inner">
+
+							<!-- Logo -->
+								<a href="/Index" class="logo">
+									<!--<span class="symbol"><img src="images/logo.svg" alt="" /></span>-->
+									<span class="title">Bilicam Admin</span>
+								</a>
+
+							<!-- Nav -->
+								<nav>
+									<ul>
+										<li><a href="#menu">Menu</a></li>
+									</ul>
+								</nav>
+
+						</div>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<h2>Menu</h2>
+						<ul>
+							<li><a href="/Index">Search</a></li>
+							<!--<li><a href="generic.html">Consequat dolor</a></li>
+							<li><a href="elements.html">Elements</a></li>-->
+							<li><a href="/Logout">Logout</a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<section>
+								<h3>Username: {{Username}}</h3>
+								<div id="edit_user_div">
+									<form action="javascript:admin_edit_user()" id="edit_user_form">
+										<div class="field">
+												<input type="text" name="username" id="username" placeholder="Username" />
+												<input type="text" name="password" id="password" placeholder="Password" />
+												<input type="text" name="name" id="name" placeholder="Name" />
+												<input type="text" name="hospital_name" id="hospital_name" placeholder="Hospital Name" />
+												<input type="text" name="hospital_address" id="hospital_address" placeholder="Hospital Address" />
+												<input type="text" name="hospital_city" id="hospital_city" placeholder="Hospital City" />
+												<br>
+												<input type="submit" value="Edit User" class="special" />
+												<a href="#" onclick="admin_hide_edit_info();">Cancel</a>
+										</div>
+									</form>
+								</div>
+								<div class="field first half">
+										<ul class="alt">
+											<li>{{Name}}</li>
+											<li>{{Hospital}}</li>
+											<li>{{Address}}</li>
+											<li>{{City}}</li>
+										</ul>
+								</div>
+								<div class="row">
+									<div class="6u 12u$(medium)">
+										<ul class="actions">
+											<li><a href="#" onclick="admin_show_edit_info();" class="button special">Edit Information</a></li>
+											<li><a href="#" onclick="admin_delete_user();" class="button special">Delete User</a></li>
+										</ul>
+									</div>
+								</div>
+							</section>
+						</div> 
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="copyright">
+								<li>&copy; Bilicam. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="{{static_url("js/jquery.min.js")}}"></script>
+			<script src="{{static_url("js/skel.min.js")}}"></script>
+			<script src="{{static_url("js/util.js")}}"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="{{static_url("js/main.js")}}"></script>
+			<script src="{{static_url("js/bili.js")}}"></script>
+	</body>
+</html>
