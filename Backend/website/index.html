@@ -9,10 +9,10 @@
 		<title>Bilicam</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<!--[if lte IE 8]><script src="{{static_url("js/ie/html5shiv.js")}}"></script><![endif]-->
 		<link rel="stylesheet" href="{{static_url("css/main.css")}}" />
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="{static_url("css/ie9.css")}}" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="{static_url("css/ie8.css")}}" /><![endif]-->
 	</head>
 	<body>
 		<!-- Wrapper -->
@@ -43,7 +43,7 @@
 						<h2>Menu</h2>
 						<ul>
 							<li><a href="/Index">Home</a></li>
-							<li><a href="account.html">Account Information</a></li>
+							<li><a href="/Account">Account Information</a></li>
 							<!--<li><a href="generic.html">Consequat dolor</a></li>
 							<li><a href="elements.html">Elements</a></li>-->
 							<li><a href="/Logout">Logout</a></li>
@@ -62,6 +62,7 @@
 											<option value="ethnicity">Ethnicity</option>
 											<option value="by_id">ID</option>
 											<option value="by_name">Name</option>
+											<option value="by_date">Date</option>
 										</select>
 									</div>
 
@@ -115,6 +116,14 @@
 										</div>
 									</div>
 
+									<div id="date_search">
+										<div class="field oneQuarter">
+											<input type="text" class="datepicker" name="date1" id="date1" placeholder="Select Date">
+										</div>
+										<div class="field oneQuarter">
+											<input type="text" class="datepicker" name="date2" id="date2" placeholder="Select Date">
+										</div>
+									</div>
 
 									<div class="field oneQuarter" id="Submit">
 										<input type="submit" value="Search" class="special" />
@@ -156,7 +165,7 @@
 										</table>
 									</div>
 
-								<a href="#" class="button special oneQuarter" id="download">Download</a>
+								<a href="downloads/test.csv" target="_blank" class="button special oneQuarter" id="download">Download</a>
 							</section>
 						</div>
 					</div>
@@ -171,14 +180,20 @@
 					</footer>
 
 			</div>
-
 		<!-- Scripts -->
+		<!-- FileSaver.js/FileSaver.js -->
 			<script src="{{static_url("js/jquery.min.js")}}"></script>
 			<script src="{{static_url("js/skel.min.js")}}"></script>
 			<script src="{{static_url("js/util.js")}}"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<!--[if lte IE 8]><script src="{{static_url("js/ie/respond.min.js")}}"></script><![endif]-->
 			<script src="{{static_url("js/main.js")}}"></script>
 			<script src="{{static_url("js/bili.js")}}"></script>
-
+			<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  			<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+			<script type="text/javascript">
+				$(document).ready(function() {
+    				$(".datepicker").datepicker();
+  				});
+			</script>
 	</body>
 </html>

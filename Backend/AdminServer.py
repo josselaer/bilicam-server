@@ -82,7 +82,7 @@ class AccountInfoHandler(BaseHandler):
 
 class EditUserHandler(BaseHandler):
     async def put(self):
-        data = tornado.escape.json_decode(self.request.body )
+        data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
         password = data["password"]
         name = data["name"]

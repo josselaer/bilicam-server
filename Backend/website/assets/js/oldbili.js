@@ -1,5 +1,8 @@
-function fill_table(data) {
+function make_csv(data) {
 
+}
+
+function fill_table(data) {
   var id_val = data["ID"];
   var firstName = data["FirstName"];
   var lastName = data["LastName"];
@@ -15,78 +18,6 @@ function fill_table(data) {
   //$("table_ethnicity").val(id_val);
 
 }
-
-function edit_user() {
-  var formData = $("#edit_user_form").serializeArray();
-  var username = "drbob01"; //need to use cookies to get username
-    /*[{name: "username", value: "asdf"}, 
-    {name: "name", value: "jake"}, 
-    {name: "hospital_name", value: "nkfla"}, 
-    {name: "hospital_address", value: "nksfdlj"}, 
-    {name: "hospital_city", value: "kljadfsj"}] (6)*/
-
-    var request_data = {};
-    if(formData[0].value != "") {
-      request_data['username'] = formData[0].value;
-    }
-    if(formData[1].value != "") {
-      request_data['name'] = formData[1].value;
-    }
-    if(formData[2].value != "") {
-      request_data['hospital_name'] = formData[2].value;
-    }
-    if(formData[3].value != "") {
-      request_data['hospital_address'] = formData[3].value;
-    }
-    if(formData[4].value != "") {
-      request_data['hospital_city'] = formData[4].value;
-    }
-    dataToSend = JSON.stringify(request_data);
-    $.ajax({
-      url : "/EditUser",
-      type: "put",
-      data: dataToSend,
-      success: function(res)
-      {
-        var jsonRes = JSON.parse(res);
-        alert("Edited user " + jsonRes["Username"]);
-        window.location.href = "/Account"
-      },
-    });
-}
-
-function change_password() {
-  var formData = $("#change_password_form").serializeArray();
-  var username = "drbob01";
-  var request_data = {};
-  if(formData[0].value != formData[1].value) {
-    alert('Passwords do not match');
-  }
-  else {
-    request_data['password'] = formData[0].value;
-    dataToSend = JSON.stringify(request_data);
-    $.ajax({
-      url : "/ChangePassword",
-      type: "put",
-      data: dataToSend,
-      success: function(res)
-      {
-        var jsonRes = JSON.parse(res);
-        alert("Edited user " + jsonRes["Username"]);
-        window.location.href = "/Account"
-      },
-    });
-  }
-}
-
-function show_change_password() {
-  $("#change_password_div").css("display", "block");
-}
-
-function hide_change_password() {
-  $("#change_password_div").css("display", "none");
-}
-
 
 function search_patient() {
     var formData = $("#search_form").serializeArray();
@@ -120,9 +51,7 @@ function search_patient() {
     else if(search_type == "by_name") {
       search_by_name(formData);
     }
-    else if(search_type == "by_date") {
-      search_by_date(formData);
-    }
+
 }
 
   function search_by_bili(formData) {
@@ -132,19 +61,22 @@ function search_patient() {
       alert("Must enter a number value");
     }
     else {
-    dataToSend = {
-    "num1":num1,
-    "num2":num2
-    };
+      dataToSend = {
+        "num1":num1,
+        "num2":num2
+      };
       $.ajax({
         url: '/SearchByBili',
-        type: "get",
+        type: 'get',
         async: false,
         data:dataToSend,
         success: function(data) {
+          alert("There are " + data.length + " results. Click download to download .csv file");
         }
       });
+
     }
+
   }
 
   function search_by_name(formData) {
@@ -181,10 +113,12 @@ function search_patient() {
         //console.log(data);
       }
     });
+
   }
 
   function search_by_ethnicity(formData) {
     var form_size = formData.length;
+
     if(form_size <= 6) {
       alert("Pick at least one ethnicity");
     }
@@ -208,27 +142,10 @@ function search_patient() {
           console.log(data);
         }
       });
+
+
     }
-  }
 
-  function search_by_date(formData) {
-
-    var date1 = formData[formData.length-2].value;
-    var date2 = formData[formData.length-1].value;
-    dataToSend = {
-      "date1":date1,
-      "date2":date2
-    };
-    $.ajax({
-        url: "/SearchByDate",
-        type: "get",
-        async: false,
-        data:dataToSend,
-        success: function(data) {
-          alert("There are " + data.length + " results. Click download to download .csv file");
-          console.log(data);
-        }
-      });
   }
 
   function login() {
@@ -241,24 +158,23 @@ function search_patient() {
     var dataToSend = JSON.stringify(data);
     $.ajax({
         url:'/',
-        type: "post",
+        type:'post',
         data:dataToSend,
-        async: false,
-        success: function(res) {
+        success:function(res) {
           var jsonRes = JSON.parse(res);
           if(jsonRes['LoggedIn'] === "True") {
             alert("Logged in");
-            window.location.href = "/Index";
+            window.location.href = "/Index"
           }
           else
-            alert("Incorrect credentials");
+            alert("Incorrect credentials")
         }
       });
   }
 
 	$('#search_by').on('change', function() {
     $("#results_table").css("display", "none");
-  	  curr_value = this.value;
+  		curr_value = this.value;
   		//bilirubin, ethnicity, by_id, by_name
   		//bili_search, ethnicity_search, id_search, name_search
   		if(curr_value == "bilirubin") {
@@ -289,14 +205,8 @@ function search_patient() {
   			$("#name_search").css("display", "none");
   		}
 
-      if(curr_value == "by_date") {
-        $("#date_search").css("display", "block");
-      }
-      else {
-        $("#date_search").css("display", "none");
-      }
-	});
 
+	})
 
 //admin funcitons
 
@@ -409,12 +319,11 @@ function search_patient() {
     var dr_username = data['username'];
     var dr_name = data['name'];
 
-    var createClickHandler = 
-            function(temp) 
+    var createClickHandler =
+            function(temp)
             {
-                return function() { 
+                return function() {
                                         var dr_username = temp; //need to use cookie here
-                                        console.log(dr_username);
                                         window.location.href = "/Info";
                                  };
             };
@@ -430,7 +339,7 @@ function search_patient() {
     tr.appendChild(td2);
     dr_table.appendChild(tr);
 
-    /*var tr = document.createElement('tr');   
+    /*var tr = document.createElement('tr');
 
     var td1 = document.createElement('td');
     var td2 = document.createElement('td');
@@ -445,7 +354,6 @@ function search_patient() {
 
     table.appendChild(tr);*/
   }
-
 
   function admin_login() {
     var username = $("#username").val();
@@ -472,7 +380,7 @@ function search_patient() {
   }
 
   function admin_clear_table() {
-    
+
     $("#dr_results_body tr").remove();
 
   }
@@ -533,5 +441,3 @@ function search_patient() {
       },
     });
   }
-
-

@@ -9,10 +9,10 @@
 		<title>Bilicam</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 8]><script src="{{static_url("js/ie/html5shiv.js")}}"></script><![endif]-->
+		<link rel="stylesheet" href="{{static_url("css/main.css")}}" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="{static_url("css/ie9.css")}}" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="{static_url("css/ie8.css")}}" /><![endif]-->
 	</head>
 	<body>
 		<!-- Wrapper -->
@@ -23,7 +23,7 @@
 						<div class="inner">
 
 							<!-- Logo -->
-								<a href="index.html" class="logo">
+								<a href="/Index" class="logo">
 									<!--<span class="symbol"><img src="images/logo.svg" alt="" /></span>-->
 									<span class="title">Bilicam</span>
 								</a>
@@ -42,11 +42,10 @@
 					<nav id="menu">
 						<h2>Menu</h2>
 						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="account.html">Account Information</a></li>
+							<li><a href="/Index">Home</a></li>
 							<!--<li><a href="generic.html">Consequat dolor</a></li>
 							<li><a href="elements.html">Elements</a></li>-->
-							<li><a href="login.html">Logout</a></li>
+							<li><a href="/Logout">Logout</a></li>
 						</ul>
 					</nav>
 
@@ -54,20 +53,45 @@
 					<div id="main">
 						<div class="inner">
 							<section>
-								<h3>Username: drbob1</h3>
+								<h3>Username: {{Username}}</h3>
+								<div id="edit_user_div">
+									<form action="javascript:edit_user()" id="edit_user_form">
+										<div class="field">
+												<input type="text" name="username" id="username" placeholder="Username" />
+												<input type="text" name="name" id="name" placeholder="Name" />
+												<input type="text" name="hospital_name" id="hospital_name" placeholder="Hospital Name" />
+												<input type="text" name="hospital_address" id="hospital_address" placeholder="Hospital Address" />
+												<input type="text" name="hospital_city" id="hospital_city" placeholder="Hospital City" />
+												<br>
+												<input type="submit" value="Edit User" class="special" />
+												<a href="#" onclick="admin_hide_edit_info();">Cancel</a>
+										</div>
+									</form>
+								</div>
+								<div id="change_password_div">
+									<form action="javascript:change_password()" id="change_password_form">
+										<div class="field">
+												<input type="password" name="password" id="password" placeholder="Password" />
+												<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm" />
+												<br>
+												<input type="submit" value="Edit User" class="special" />
+												<a href="#" onclick="hide_change_password();">Cancel</a>
+										</div>
+									</form>
+								</div>
 								<div class="field first half">
-										<ul class="alt">
-											<li>Dr. Robert Doe</li>
-											<li>St. Judes Hospital</li>
-											<li>123 N. Hospital Lane</li>
-											<li>Dallas, TX</li>
+										<ul class="alt" id="dr_info_list">
+											<li>{{Name}}</li>
+											<li>{{Hospital}}</li>
+											<li>{{Address}}</li>
+											<li>{{City}}</li>
 										</ul>
 								</div>
 								<div class="row">
 									<div class="6u 12u$(medium)">
 										<ul class="actions">
-											<li><a href="#" class="button special">Edit Informaiton</a></li>
-											<li><a href="#" class="button special">Change Username</a></li>
+											<li><a href="#" onclick="admin_show_edit_info();" class="button special">Edit Information</a></li>
+											<li><a href="#" onclick="show_change_password();" class="button special">Change Password</a></li>
 										</ul>
 									</div>
 								</div>
@@ -87,12 +111,11 @@
 			</div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/skel.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/bili.js"></script>
-
+			<script src="{{static_url("js/jquery.min.js")}}"></script>
+			<script src="{{static_url("js/skel.min.js")}}"></script>
+			<script src="{{static_url("js/util.js")}}"></script>
+			<!--[if lte IE 8]><script src="{{static_url("js/ie/respond.min.js")}}"></script><![endif]-->
+			<script src="{{static_url("js/main.js")}}"></script>
+			<script src="{{static_url("js/bili.js")}}"></script>
 	</body>
 </html>
