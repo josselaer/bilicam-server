@@ -62,7 +62,7 @@ function edit_user() {
       {
         var jsonRes = JSON.parse(res);
         alert("Edited user " + jsonRes["Username"]);
-        window.location.href = "/Account"
+        window.location.href = "/Account";
       },
     });
 }
@@ -463,7 +463,7 @@ function search_patient() {
     var td1 = document.createElement('td');
     var td2 = document.createElement('td');
 
-
+    //console.log(data);
     var dr_username = data['username'];
     var dr_name = data['name'];
 
@@ -471,20 +471,10 @@ function search_patient() {
             function(temp)
             {
                 return function() {
-                                        data2 = {
-                                            "un":temp['username'],
-                                            "password":temp['password'],
-                                            "name":temp['name'],
-                                            "hospital":temp['hospital'],
-                                            "hospitalAddress":temp['hospitalAddress'],
-                                            "city":temp['city']
-                                        };
-                                        dataToSend = JSON.stringify(data2);
-                                        console.log(data2);
                                         $.ajax({
-                                          url : "/Info",
+                                          url : "/LoadInfo",
                                           type: "get",
-                                          data: data2,
+                                          data: temp,
                                           success: function(res)
                                           {
                                             window.location.href = "/Info";

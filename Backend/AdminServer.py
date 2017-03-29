@@ -43,12 +43,7 @@ class SearchByUserHandler(BaseHandler):
         username = data["dr_username"][0]
         document = await db.doctors.find_one({"username":username})
         if document != None:
-            dataToSend = {"username": document["username"], "name": document["name"]}
-            self.set_cookie("username", str(document["username"]).replace(" ", "|"))
-            self.set_cookie("name", str(document["name"]).replace(" ", "|"))
-            self.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
-            self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
-            self.set_cookie("city", str(document["city"]).replace(" ", "|"))
+            dataToSend = {"username": document["username"], "name": document["name"], "hospital":document["hospital"],"hospitalAddress":document["hospitalAddress"],"city":document["city"]}
             self.write(json.dumps(dataToSend))
 
 class SearchByNameHandler(BaseHandler):
@@ -60,37 +55,43 @@ class SearchByNameHandler(BaseHandler):
         if document != None:
             dataToSend = []
             for x in document:
-                temp = {"username": x['username'], "name": x['name'], "hospital": x['hospital'], "hospitalAddress": x['hospitalAddress'], "city": x['city']}
+                temp = {"username": x["username"], "name": x["name"], "hospital": x["hospital"], "hospitalAddress": x["hospitalAddress"], "city": x["city"]}
                 dataToSend.append(temp)
             #dataToSend = {"username": document["username"], "name": document["name"]}
             #self.set_cookie("username", str(document["username"]).replace(" ", "|"))
             #self.set_cookie("name", str(document["name"]).replace(" ", "|"))
             #elf.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
             #self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
-            #elf.set_cookie("city", str(document["city"]).replace(" ", "|"))
+            #self.set_cookie("city", str(document["city"]).replace(" ", "|"))
             self.write(json.dumps(dataToSend))
 
-class AccountInfoHandler(BaseHandler):
+class LoadAccountInfoHandler(BaseHandler):
     """Account Info"""
-    @tornado.web.authenticated
+    #@tornado.web.authenticated
     def get(self):
         if self.get_cookie("Checked") == "Yes":
             self.redirect("/Index")
             return
         data = urllib.parse.parse_qs(self.request.query)
-        #un = data["un"][0]
-        name = data["name"][0]
-        hospital = data["hospital"][0]
-        address = data["hospitalAddress"][0]
-        city = data["city"][0]
-        #print(un)
-        print(name)
-        print(hospital)
-        print(address)
-        print(city)
-        print()
-        self.render("admin_account_info.html",Username="hello", Name = name, Hospital = hospital,
-                    Address = address, City = city)
+        self.set_cookie("username", str(data["username"][0]).replace(" ", "|"))
+        self.set_cookie("name", str(data["name"][0]).replace(" ", "|"))
+        self.set_cookie("hospital", str(data["hospital"][0]).replace(" ", "|"))
+        self.set_cookie("hospitalAddress", str(data["hospitalAddress"][0]).replace(" ", "|"))
+        self.set_cookie("city", str(data["city"][0]).replace(" ", "|"))
+
+class AccountInfoHandler(BaseHandler):
+    """Account Info"""
+    #@tornado.web.authenticated
+    def get(self):
+        if self.get_cookie("Checked") == "Yes":
+            self.redirect("/Index")
+            return
+        username = self.get_cookie("username").replace("|", " ")
+        name = self.get_cookie("name").replace("|", " ")
+        hospital = self.get_cookie("hospital").replace("|", " ")
+        address = self.get_cookie("hospitalAddress").replace("|", " ")
+        city = self.get_cookie("city").replace("|", " ")
+        self.render("admin_account_info.html", Username=username, Name=name, Hospital=hospital, Address=address, City=city)
 
 
 class EditUserHandler(BaseHandler):
@@ -178,6 +179,7 @@ app = tornado.web.Application([
     (r"/Index", IndexHandler),
     (r"/SearchByUser", SearchByUserHandler),
     (r"/Info", AccountInfoHandler),
+    (r"/LoadInfo", LoadAccountInfoHandler),
     (r"/EditUser", EditUserHandler),
     (r"/DeleteUser", DeleteUserHandler),
     (r"/SearchByName", SearchByNameHandler),
