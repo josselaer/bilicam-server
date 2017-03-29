@@ -1,0 +1,17 @@
+use bili
+
+db.patients.insert({"bilirubin" : 5.57, "name" : "Antonio Stone", "id" : 456, "ethnicity" : "Black", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-01")})
+db.patients.insert({"bilirubin" : 10.1, "name" : "Bob Kelso", "id" : 1, "ethnicity" : "White", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-11")})
+db.patients.insert({"bilirubin" : 1.1, "name" : "Jake Osselaer", "id" : 2, "ethnicity" : "White", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-20") })
+db.patients.insert({"bilirubin" : 2.4, "name" : "Arturo Laguna", "id" : 3, "ethnicity" : "Asian", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-23") })
+db.patients.insert({"bilirubin" : 3.3, "name" : "Van Tran", "id" : 4, "ethnicity" : "Black", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-02") })
+db.patients.insert({"bilirubin" : 4.2, "name" : "Austin Cloyd", "id" : 5, "ethnicity" : "White Black", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-28") })
+db.patients.insert({"bilirubin" : 7.1, "name" : "Andrew Watts", "id" : 6, "ethnicity" : "Pacific Islander", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-02-13") })
+db.patients.insert({"bilirubin" : 9.9, "name" : "Adrian Peterson", "id" : 7, "ethnicity" : "Hispanic", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-02-14") })
+db.patients.insert({"bilirubin" : 10.8, "name" : "John Doe", "id" : 8, "ethnicity" : "White", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-02-23") })
+db.patients.insert({"bilirubin" : 14.7, "name" : "Jan Doe", "id" : 9, "ethnicity" : "Black", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-01-13") })
+db.patients.insert({"bilirubin" : 17.6, "name" : "Isabella Doe", "id" : 10, "ethnicity" : "Asian", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-18") })
+db.patients.insert({"bilirubin" : 22.5, "name" : "Brennan Williams", "id" : 11, "ethnicity" : "Hispanic", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-01-22") })
+db.patients.insert({"bilirubin" : 25.4, "name" : "Nancy Peterson", "id" : 12, "ethnicity" : "White", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-01-31") })
+db.patients.insert({"bilirubin" : 3.3, "name" : "Richard Nixon", "id" : 13, "ethnicity" : "Black", "images": "jksfdjkjfsakldsfa", "date": new Date("2017-03-13") })
+db.patients.insert({"bilirubin" : 8.2, "name" : "Roger Rabbit", "id" : 14, "ethnicity" : "Asian", "images": "jksfdjkjfsakldsfa", "date": new Date("2016-12-13") })
