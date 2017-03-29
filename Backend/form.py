@@ -7,9 +7,11 @@ import json
 import urllib.parse
 import tornado.httpserver
 import ssl
+import csv
+from random import randint
 import datetime
 
-db = motor.motor_tornado.MotorClient().Bilirubin
+db = motor.motor_tornado.MotorClient().bili
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -28,7 +30,7 @@ class LoginHandler(BaseHandler):
         data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
         password = data["password"]
-        document = await db.patients.find_one({"username":username, "password":password})
+        document = await db.doctors.find_one({"username":username, "password":password})
 
         # Need to add cookies or another authentication method
         if document != None:
@@ -50,6 +52,14 @@ class IndexHandler(BaseHandler):
     def get(self):
         self.render("index.html")
 
+class CsvHandler(tornado.web.RequestHandler):
+    """Csv Page"""
+    def get(self, csv_file):
+        #data = urllib.parse.parse_qs(self.request.query)
+        filename = "csv_download/" + csv_file
+        #print(filename)
+        self.render(filename)
+
 class SearchByBiliHandler(tornado.web.RequestHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
@@ -57,21 +67,25 @@ class SearchByBiliHandler(tornado.web.RequestHandler):
         num2 = float(data["num2"][0])
         cursor = db.patients.find({"bilirubin":{"$gt":num1, "$lt":num2}})
         document = await cursor.to_list(length=100)
-        print(document)
+        filename = bili_to_csv(document)
+        #print(filename)
+        self.write({"filename":filename})
 
 class SearchByNameHandler(tornado.web.RequestHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         name = str(data["name"][0]).strip()
         document = await db.patients.find_one({"name":name})
-        print(document)
+        filename = bili_to_csv(document)
+        self.write({"filename":filename})
 
 class SearchByIdHandler(tornado.web.RequestHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         num = int(data["idNum"][0])
         document = await db.patients.find_one({"id":num})
-        print(document)
+        filename = bili_to_csv(document)
+        self.write({"filename":filename})
 
 class SearchByEthnicityHandler(tornado.web.RequestHandler):
     async def get(self):
@@ -79,7 +93,8 @@ class SearchByEthnicityHandler(tornado.web.RequestHandler):
         ethnicities = [x.title() for x in data["ethnicities[]"]]
         cursor = db.patients.find({"ethnicity":{"$in":ethnicities}})
         document = await cursor.to_list(length=100)
-        print(document)
+        filename = bili_to_csv(document)
+        self.write({"filename":filename})
 
 class SearchByDateHandler(tornado.web.RequestHandler):
     async def get(self):
@@ -92,7 +107,8 @@ class SearchByDateHandler(tornado.web.RequestHandler):
         date2 = datetime.datetime.strptime(date2, "%m/%d/%Y")
         cursor = db.patients.find({"date":{"$gt":date1, "$lt":date2}})
         document = await cursor.to_list(length=100)
-        print(document)
+        filename = bili_to_csv(document)
+        self.write({"filename":filename})
 
 class AccountHandler(BaseHandler):
     def get(self):
@@ -112,7 +128,7 @@ class EditUserHandler(BaseHandler):
         hospitalAddress = data["hospital_address"]
         city = data["hospital_city"]
         old_username = self.get_cookie("username").replace("|", " ")
-        document = await db.patients.update_one({"username":old_username}, {"$set":{"username":username, "name":name, "hospital":hospital, "hospitalAddress":hospitalAddress, "city":city}})
+        document = await db.doctors.update_one({"username":old_username}, {"$set":{"username":username, "name":name, "hospital":hospital, "hospitalAddress":hospitalAddress, "city":city}})
         self.set_cookie("username", username.replace(" ", "|"))
         self.set_cookie("name", name.replace(" ", "|"))
         self.set_cookie("hospital", hospital.replace(" ", "|"))
@@ -126,7 +142,7 @@ class ChangePasswordHandler(BaseHandler):
         data = tornado.escape.json_decode(self.request.body)
         password = data["password"]
         username = self.get_cookie("username").replace("|", " ")
-        document = await db.patients.update_one({"username":username}, {"$set":{"password":password}})
+        document = await db.doctors.update_one({"username":username}, {"$set":{"password":password}})
         response = {"Username":username}
         self.write(json.dumps(response))
 
@@ -135,9 +151,36 @@ class LogoutHandler(tornado.web.RequestHandler):
         self.clear_cookie("User")
         self.redirect("/")
 
+def bili_to_csv(json_obj):
+    filename = str(randint(100,999999)) + ".csv"
+    csv_txt = "Name,ID,Bilirubin Value,Ethnicity,Date,Images\n"
+    if(type(json_obj) == list):
+        for x in json_obj:
+            csv_txt = csv_txt + json_to_csv(x)
+    elif(type(json_obj) == dict):
+        csv_txt = csv_txt + json_to_csv(json_obj)
+    else:
+        csv_txt = "error"
+    name_temp = settings['template_path'] + "csv_download/" + filename
+    f = open(name_temp, 'w')
+    f.write(csv_txt)
+    f.close()
+    return filename
+
+def json_to_csv(json_obj):
+    csv_txt = ""
+    name = json_obj['name']
+    p_id = json_obj['id']
+    bilirubin = json_obj['bilirubin']
+    ethnicity = json_obj['ethnicity']
+    date = "1/1/95" #json_obj['date']
+    image = json_obj['images']
+    csv_txt = name + "," + str(p_id) + "," + str(bilirubin) + "," + ethnicity + "," + date + "," + image + "\n"
+    return csv_txt
+
 settings = {
-    "template_path":os.path.dirname(os.path.realpath(__file__)) + "\\website\\",
-    "static_path":os.path.dirname(os.path.realpath(__file__)) + "\\website\\assets\\",
+    "template_path":os.path.dirname(os.path.realpath(__file__)) + "/website/",
+    "static_path":os.path.dirname(os.path.realpath(__file__)) + "/website/assets/",
     "debug":True,
     "cookie_secret":os.urandom(32),
     "login_url":"/"
@@ -150,6 +193,7 @@ ssl_ctx.load_cert_chain("server.crt", "server.key")
 app = tornado.web.Application([
     (r"/", LoginHandler),
     (r"/Index", IndexHandler),
+    (r"/CsvDownload/([^/]+)", CsvHandler),
     (r"/SearchByBili", SearchByBiliHandler),
     (r"/SearchByName", SearchByNameHandler),
     (r"/SearchById", SearchByIdHandler),

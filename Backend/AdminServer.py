@@ -8,7 +8,7 @@ import urllib.parse
 import tornado.httpserver
 import ssl
 
-db = motor.motor_tornado.MotorClient().Bilirubin
+db = motor.motor_tornado.MotorClient().bili
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -29,7 +29,7 @@ class CreateUser(BaseHandler):
         hospital = data["hospital"]
         hospitalAddress = data["hospitalAddress"]
         city = data["city"]
-        document = await db.patients.insert_one(
+        document = await db.doctors.insert_one(
             {"username": username, "password": password, "name": name, "hospital": hospital,
              "hospitalAddress": hospitalAddress, "city": city})
         if document != None:
@@ -41,7 +41,7 @@ class SearchByUserHandler(BaseHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         username = data["dr_username"][0]
-        document = await db.patients.find_one({"username":username})
+        document = await db.doctors.find_one({"username":username})
         if document != None:
             dataToSend = {"username": document["username"], "name": document["name"]}
             self.set_cookie("username", str(document["username"]).replace(" ", "|"))
@@ -55,7 +55,7 @@ class SearchByNameHandler(BaseHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         name = data["name"][0]
-        document = await db.patients.find_one({"name":name})
+        document = await db.doctors.find_one({"name":name})
         if document != None:
             dataToSend = {"username": document["username"], "name": document["name"]}
             self.set_cookie("username", str(document["username"]).replace(" ", "|"))
@@ -82,7 +82,7 @@ class AccountInfoHandler(BaseHandler):
 
 class EditUserHandler(BaseHandler):
     async def put(self):
-        data = tornado.escape.json_decode(self.request.body)
+        data = tornado.escape.json_decode(self.request.body )
         username = data["username"]
         password = data["password"]
         name = data["name"]
@@ -90,7 +90,7 @@ class EditUserHandler(BaseHandler):
         hospital_address = data["hospital_address"]
         hospital_city = data["hospital_city"]
         old_username = self.get_cookie("username").replace("|", " ")
-        document = await db.patients.update_one({"username":old_username}, {"$set":{"username":username, "password":password, "hospital":hospital_name,
+        document = await db.doctors.update_one({"username":old_username}, {"$set":{"username":username, "password":password, "hospital":hospital_name,
                                                                                     "hospitalAddress":hospital_address, "city":hospital_city, "name":name}})
         self.set_cookie("username", username.replace(" ", "|"))
         self.set_cookie("name", name.replace(" ", "|"))
@@ -103,7 +103,7 @@ class EditUserHandler(BaseHandler):
 class DeleteUserHandler(BaseHandler):
     async def delete(self):
         username = self.get_cookie("username").replace("|", " ")
-        document = await db.patients.delete_one({"username":username})
+        document = await db.doctors.delete_one({"username":username})
         self.set_cookie("Checked", "Yes")
         response = {"Username":username}
         self.write(json.dumps(response))
@@ -128,7 +128,7 @@ class LoginHandler(BaseHandler):
         data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
         password = data["password"]
-        document = await db.patients.find_one({"username": username, "password": password})
+        document = await db.admin.find_one({"username": username, "password": password})
 
         # Need to add cookies or another authentication method
         if document != None:
@@ -147,8 +147,8 @@ class LogoutHandler(tornado.web.RequestHandler):
 
 
 settings = {
-    "template_path": os.path.dirname(os.path.realpath(__file__)) + "\\website\\",
-    "static_path": os.path.dirname(os.path.realpath(__file__)) + "\\website\\assets\\",
+    "template_path": os.path.dirname(os.path.realpath(__file__)) + "/website/",
+    "static_path": os.path.dirname(os.path.realpath(__file__)) + "/website/assets/",
     "debug": True,
     "cookie_secret": os.urandom(32),
     "login_url": "/"

@@ -1,4 +1,16 @@
+//http://private-ca334-bilicam.apiary-mock.com
+
+function download_csv(data) {
+  //var filename = "../" + data;
+  //"csv_download/filename.csv"
+  var filename = "/CsvDownload/" + data;
+  $('#download_csv').attr("href", filename);
+  $('#download_csv')[0].click();
+}
+
 function fill_table(data) {
+
+  console.log("here");
 
   var id_val = data["ID"];
   var firstName = data["FirstName"];
@@ -123,6 +135,7 @@ function search_patient() {
     else if(search_type == "by_date") {
       search_by_date(formData);
     }
+
 }
 
   function search_by_bili(formData) {
@@ -131,20 +144,33 @@ function search_patient() {
     if(isNaN(num1) || isNaN(num2)) {
       alert("Must enter a number value");
     }
+    else if(num1 < 0 || num1 > 30) {
+      alert("Number must be between 0 and 30");
+    }
+    else if(num2 < 0 || num2 > 30) {
+      alert("Number must be between 0 and 30");
+    }
+    else if(num1 > num2) {
+      alert("The second number must be greater than the first");
+    }
     else {
-    dataToSend = {
-    "num1":num1,
-    "num2":num2
-    };
+      dataToSend = {
+        "num1":num1,
+        "num2":num2
+      };
       $.ajax({
         url: '/SearchByBili',
-        type: "get",
+        type: 'get',
         async: false,
         data:dataToSend,
         success: function(data) {
+          //console.log(data['filename']);
+          download_csv(data['filename']);
         }
       });
+
     }
+
   }
 
   function search_by_name(formData) {
@@ -154,16 +180,21 @@ function search_patient() {
     dataToSend = {
       "name":name
     };
-    $.ajax({
-      url: "/SearchByName",
-      type: "get",
-      async: false,
-      data:dataToSend,
-      success: function(data) {
-        fill_table(data);
-        //console.log(data);
-      }
-    });
+    if(firstName == "" || lastName == "") {
+      alert("Must enter a value for the names");
+    }
+    else {
+      $.ajax({
+        url: "/SearchByName",
+        type: "get",
+        async: false,
+        data:dataToSend,
+        success: function(data) {
+          //fill_table(data);
+          download_csv(data['filename']);
+        }
+      });
+    }
   }
 
   function search_by_id(formData) {
@@ -171,20 +202,27 @@ function search_patient() {
     dataToSend = {
       "idNum":idNum
     };
-    $.ajax({
-      url: "/SearchById",
-      type: "get",
-      async: false,
-      data:dataToSend,
-      success: function(data) {
-        fill_table(data);
-        //console.log(data);
-      }
-    });
+    if(idNum == "") {
+      alert("Must enter a value for the ID");
+    }
+    else {
+      $.ajax({
+        url: "/SearchById",
+        type: "get",
+        async: false,
+        data:dataToSend,
+        success: function(data) {
+          //fill_table(data);
+          download_csv(data['filename']);
+        }
+      });
+    }
+
   }
 
   function search_by_ethnicity(formData) {
     var form_size = formData.length;
+
     if(form_size <= 6) {
       alert("Pick at least one ethnicity");
     }
@@ -204,11 +242,13 @@ function search_patient() {
         async: false,
         data:dataToSend,
         success: function(data) {
-          alert("There are " + data.length + " results. Click download to download .csv file");
-          console.log(data);
+          download_csv(data['filename']);
         }
       });
+
+
     }
+
   }
 
   function search_by_date(formData) {
@@ -219,16 +259,20 @@ function search_patient() {
       "date1":date1,
       "date2":date2
     };
-    $.ajax({
-        url: "/SearchByDate",
-        type: "get",
-        async: false,
-        data:dataToSend,
-        success: function(data) {
-          alert("There are " + data.length + " results. Click download to download .csv file");
-          console.log(data);
-        }
-      });
+    if(date1 == "" || date2 == "") {
+      alert("You must enter a date for both");
+    }
+    else {
+      $.ajax({
+          url: "/SearchByDate",
+          type: "get",
+          async: false,
+          data:dataToSend,
+          success: function(data) {
+            download_csv(data['filename']);
+          }
+        });
+    }
   }
 
   function login() {
@@ -241,24 +285,23 @@ function search_patient() {
     var dataToSend = JSON.stringify(data);
     $.ajax({
         url:'/',
-        type: "post",
+        type:'post',
         data:dataToSend,
-        async: false,
-        success: function(res) {
+        success:function(res) {
           var jsonRes = JSON.parse(res);
           if(jsonRes['LoggedIn'] === "True") {
             alert("Logged in");
-            window.location.href = "/Index";
+            window.location.href = "/Index"
           }
           else
-            alert("Incorrect credentials");
+            alert("Incorrect credentials")
         }
       });
   }
 
 	$('#search_by').on('change', function() {
     $("#results_table").css("display", "none");
-  	  curr_value = this.value;
+  		curr_value = this.value;
   		//bilirubin, ethnicity, by_id, by_name
   		//bili_search, ethnicity_search, id_search, name_search
   		if(curr_value == "bilirubin") {
@@ -295,8 +338,9 @@ function search_patient() {
       else {
         $("#date_search").css("display", "none");
       }
-	});
 
+
+	});
 
 //admin funcitons
 
@@ -347,6 +391,7 @@ function search_patient() {
         admin_create_table(jsonRes,0);
       }
     });
+
   }
 
   function admin_search_by_name(formData) {
@@ -358,7 +403,12 @@ function search_patient() {
       data: dataToSend,
       success: function(res) {
         var jsonRes = JSON.parse(res);
-        admin_create_table(jsonRes,1);
+        if(jsonRes.length > 1) {
+          admin_create_table(jsonRes,1);
+        }
+        else {
+          admin_create_table(jsonRes,0);
+        }
       }
     });
   }
@@ -394,8 +444,16 @@ function search_patient() {
   }
 
   function admin_create_table(data, is_array) {
+      if(is_array == 1) { //search by name
+      for(var i = 0; i < data.length; i++) {
+        add_table_row(data[i]);
+      }
+    }
+    else { //search by user
       add_table_row(data);
+    }
       $("#dr_results_table").css("display", "block");
+
   }
 
   function add_table_row(data) {
@@ -409,12 +467,11 @@ function search_patient() {
     var dr_username = data['username'];
     var dr_name = data['name'];
 
-    var createClickHandler = 
-            function(temp) 
+    var createClickHandler =
+            function(temp)
             {
-                return function() { 
+                return function() {
                                         var dr_username = temp; //need to use cookie here
-                                        console.log(dr_username);
                                         window.location.href = "/Info";
                                  };
             };
@@ -430,7 +487,7 @@ function search_patient() {
     tr.appendChild(td2);
     dr_table.appendChild(tr);
 
-    /*var tr = document.createElement('tr');   
+    /*var tr = document.createElement('tr');
 
     var td1 = document.createElement('td');
     var td2 = document.createElement('td');
@@ -445,7 +502,6 @@ function search_patient() {
 
     table.appendChild(tr);*/
   }
-
 
   function admin_login() {
     var username = $("#username").val();
@@ -472,7 +528,7 @@ function search_patient() {
   }
 
   function admin_clear_table() {
-    
+
     $("#dr_results_body tr").remove();
 
   }
@@ -519,6 +575,7 @@ function search_patient() {
         window.location.href = "/Info";
       },
     });
+
   }
 
   function admin_delete_user() { //probably needs some kind of extra authorization
@@ -533,5 +590,3 @@ function search_patient() {
       },
     });
   }
-
-

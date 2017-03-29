@@ -48,8 +48,13 @@
 		-webkit-text-size-adjust: none;
 	}
 
-	#id_search, #name_search, #ethnicity_search, #bili_search, #results_table {
+	#id_search, #date_search, #name_search, #ethnicity_search, #bili_search, #results_table, #dr_results_table, #user_search {
 		display:none;
+	}
+
+	#dr_results_body tr:hover {
+		background-color: #0066ff;
+		color: #ffffff;
 	}
 
 	/*
@@ -57,13 +62,25 @@
 		display:block;
 	}*/
 
-	#download {
-		float:right;
+	#download_csv {
+		display:none;
 	}
 
 	#Submit {
 		float:right;
 		padding-left: 8em;
+	}
+
+	#edit_user_div, #change_password_div {
+		display:none;
+		position: absolute;
+		z-index: 100;
+		background-color: #ffffff;
+		border-style: solid;
+		border-color: #000000;
+		border-width: 2px;
+		padding: 2em;
+		width: 66%;
 	}
 
 /* Box Model */
