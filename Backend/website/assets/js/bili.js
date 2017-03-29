@@ -471,12 +471,29 @@ function search_patient() {
             function(temp)
             {
                 return function() {
-                                        var dr_username = temp; //need to use cookie here
-                                        window.location.href = "/Info";
+                                        data2 = {
+                                            "un":temp['username'],
+                                            "password":temp['password'],
+                                            "name":temp['name'],
+                                            "hospital":temp['hospital'],
+                                            "hospitalAddress":temp['hospitalAddress'],
+                                            "city":temp['city']
+                                        };
+                                        dataToSend = JSON.stringify(data2);
+                                        console.log(data2);
+                                        $.ajax({
+                                          url : "/Info",
+                                          type: "get",
+                                          data: data2,
+                                          success: function(res)
+                                          {
+                                            window.location.href = "/Info";
+                                          },
+                                        });
                                  };
             };
 
-    tr.onclick = createClickHandler(dr_username);
+    tr.onclick = createClickHandler(data);
 
     var text1 = document.createTextNode(dr_username);
     var text2 = document.createTextNode(dr_name);
