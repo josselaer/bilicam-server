@@ -5,6 +5,7 @@ function download_csv(data) {
   //"csv_download/filename.csv"
   var filename = "/CsvDownload/" + data;
   $('#download_csv').attr("href", filename);
+  $('#download_csv').attr("download", filename);
   $('#download_csv')[0].click();
 }
 
