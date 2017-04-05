@@ -10,6 +10,7 @@ import ssl
 import csv
 from random import randint
 import datetime
+import bcrypt
 
 db = motor.motor_tornado.MotorClient().bili
 
@@ -30,21 +31,23 @@ class LoginHandler(BaseHandler):
         data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
         password = data["password"]
-        document = await db.doctors.find_one({"username":username, "password":password})
-
-        # Need to add cookies or another authentication method
+        document = await db.doctors.find_one({"username":username})
         if document != None:
-            self.set_secure_cookie("User", username)
-            self.set_cookie("username", str(document["username"]).replace(" ", "|"))
-            self.set_cookie("name", str(document["name"]).replace(" ", "|"))
-            self.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
-            self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
-            self.set_cookie("city", str(document["city"]).replace(" ", "|"))
-            response = {"LoggedIn":"True"}
-            self.write(json.dumps(response))
-        else:
-            response = {"LoggedIn":"False"}
-            self.write(json.dumps(response))
+            stored_password = document['password']
+            salt = document['salt'].encode()
+            password = bcrypt.hashpw(password.encode(), salt)
+            if stored_password == password.decode():
+                self.set_secure_cookie("User", username)
+                self.set_cookie("username", str(document["username"]).replace(" ", "|"))
+                self.set_cookie("name", str(document["name"]).replace(" ", "|"))
+                self.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
+                self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
+                self.set_cookie("city", str(document["city"]).replace(" ", "|"))
+                response = {"LoggedIn": "True"}
+                self.write(json.dumps(response))
+            else:
+                response = {"LoggedIn": "False"}
+                self.write(json.dumps(response))
 
 class IndexHandler(BaseHandler):
     """Index Page"""
