@@ -97,15 +97,38 @@ class AccountInfoHandler(BaseHandler):
 class EditUserHandler(BaseHandler):
     async def put(self):
         data = tornado.escape.json_decode(self.request.body )
-        username = data["username"]
-        password = data["password"]
-        name = data["name"]
-        hospital_name = data["hospital_name"]
-        hospital_address = data["hospital_address"]
-        hospital_city = data["hospital_city"]
+        if(data['username'] = ""):
+            username = self.get_cookie("username").replace("|", " ")
+        else:
+            username = data["username"]
+
+        if(data['name'] = ""):
+            name = self.get_cookie("name").replace("|", " ")
+        else:
+            name = data["name"]
+
+        if(data['hospital_name'] = ""):
+            hospital_name = self.get_cookie("hospital").replace("|", " ")
+        else:
+            hospital_name = data["hospital_name"]
+
+        if(data['hospital_address'] = ""):
+            hospital_address = self.get_cookie("hospitalAddress").replace("|", " ")
+        else:
+            hospital_address = data["hospital_address"]
+
+        if(data['hospital_city'] = ""):
+            hospital_city = self.get_cookie("city").replace("|", " ")
+        else:
+            hospital_city = data["hospital_city"]
+
         old_username = self.get_cookie("username").replace("|", " ")
-        document = await db.doctors.update_one({"username":old_username}, {"$set":{"username":username, "password":password, "hospital":hospital_name,
+        if(data['password'] == ""):
+            document = await db.doctors.update_one({"username":old_username}, {"$set":{"username":username, "hospital":hospital_name,
                                                                                     "hospitalAddress":hospital_address, "city":hospital_city, "name":name}})
+        else:
+            document = await db.doctors.update_one({"username":old_username}, {"$set":{"username":username, "password":password, "hospital":hospital_name,
+                                                                                    "hospitalAddress":hospital_address, "city":hospital_city, "name":name}})                                                                                    "hospitalAddress":hospital_address, "city":hospital_city, "name":name}})
         self.set_cookie("username", username.replace(" ", "|"))
         self.set_cookie("name", name.replace(" ", "|"))
         self.set_cookie("hospital", hospital_name.replace(" ", "|"))
