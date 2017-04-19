@@ -125,27 +125,27 @@ class AccountHandler(BaseHandler):
 class EditUserHandler(BaseHandler):
     async def put(self):
         data = tornado.escape.json_decode(self.request.body)
-        if(data['username'] = ""):
+        if(data['username'] == ""):
             username = self.get_cookie("username").replace("|", " ")
         else:
             username = data["username"]
 
-        if(data['name'] = ""):
+        if(data['name'] == ""):
             name = self.get_cookie("name").replace("|", " ")
         else:
             name = data["name"]
 
-        if(data['hospital_name'] = ""):
+        if(data['hospital_name'] == ""):
             hospital = self.get_cookie("hospital").replace("|", " ")
         else:
             hospital = data["hospital_name"]
 
-        if(data['hospital_address'] = ""):
+        if(data['hospital_address'] == ""):
             hospitalAddress = self.get_cookie("hospitalAddress").replace("|", " ")
         else:
             hospitalAddress = data["hospital_address"]
 
-        if(data['hospital_city'] = ""):
+        if(data['hospital_city'] == ""):
             city = self.get_cookie("city").replace("|", " ")
         else:
             city = data["hospital_city"]
