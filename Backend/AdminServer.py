@@ -7,6 +7,7 @@ import json
 import urllib.parse
 import tornado.httpserver
 import ssl
+import bcrypt
 
 db = motor.motor_tornado.MotorClient().bili
 
@@ -24,14 +25,16 @@ class CreateUser(BaseHandler):
     async def post(self):
         data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
-        password = data["password"]
+        unsalted_password = data['password']
+        salt = bcrypt.gensalt()
+        password = bcrypt.hashpw(unsalted_password.encode(), salt)
         name = data["name"]
         hospital = data["hospital"]
         hospitalAddress = data["hospitalAddress"]
         city = data["city"]
         document = await db.doctors.insert_one(
-            {"username": username, "password": password, "name": name, "hospital": hospital,
-             "hospitalAddress": hospitalAddress, "city": city})
+            {"username": username, "password": password.decode(), "name": name, "hospital": hospital,
+             "hospitalAddress": hospitalAddress, "city": city, "salt": salt.decode()})
         if document != None:
             response = {"CreatedUser": "True"}
             self.write(json.dumps(response))
