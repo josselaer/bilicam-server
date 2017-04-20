@@ -167,18 +167,20 @@ class LoginHandler(BaseHandler):
     async def post(self):
         data = tornado.escape.json_decode(self.request.body)
         username = data["username"]
-        password = data["password"]
-        document = await db.admin.find_one({"username": username, "password": password})
-
-        # Need to add cookies or another authentication method
+        password = data['password']
+        document = await db.admin.find_one({"username":username})
         if document != None:
-            self.set_secure_cookie("Admin", username)
-            self.set_cookie("Checked", "No")
-            response = {"LoggedIn": "True"}
-            self.write(json.dumps(response))
-        else:
-            response = {"LoggedIn": "False"}
-            self.write(json.dumps(response))
+            stored_password = document['password']
+            salt = document['salt'].encode()
+            password = bcrypt.hashpw(password.encode(), salt)
+            if stored_password == password.decode():
+                self.set_secure_cookie("Admin", username)
+                self.set_cookie("Checked", "No")
+                response = {"LoggedIn": "True"}
+                self.write(json.dumps(response))
+            else:
+                response = {"LoggedIn": "False"}
+                self.write(json.dumps(response))
 
 class LogoutHandler(tornado.web.RequestHandler):
     def get(self):
