@@ -11,8 +11,10 @@ import csv
 from random import randint
 import datetime
 import bcrypt
+from cryptography.fernet import Fernet
 
 db = motor.motor_tornado.MotorClient().bili
+key = ""
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -43,6 +45,9 @@ class LoginHandler(BaseHandler):
                 self.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
                 self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
                 self.set_cookie("city", str(document["city"]).replace(" ", "|"))
+                key_document = await db.patients.find_one({"key": {"$exists": "true"}})
+                global key
+                key = key_document["key"]
                 response = {"LoggedIn": "True"}
                 self.write(json.dumps(response))
             else:
@@ -69,17 +74,28 @@ class SearchByBiliHandler(tornado.web.RequestHandler):
         num1 = float(data["num1"][0])
         num2 = float(data["num2"][0])
         cursor = db.patients.find({"bilirubin":{"$gt":num1, "$lt":num2}})
-        document = await cursor.to_list(length=100)
-        filename = bili_to_csv(document)
-        #print(filename)
+        documents = await cursor.to_list(length=100)
+        #print("Documents before:", documents, "\n\n\n\n")
+        for document in documents:
+            NameDecrypter(document)
+        #print("Documents After:", documents, "\n\n\n\n")
+        filename = bili_to_csv(documents)
         self.write({"filename":filename})
 
 class SearchByNameHandler(tornado.web.RequestHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         name = str(data["name"][0]).strip()
-        document = await db.patients.find_one({"name":name})
-        filename = bili_to_csv(document)
+        cursor = db.patients.find({})
+        documents = await cursor.to_list(length=100)
+        target_document = None
+        for document in documents:
+            NameDecrypter(document)
+            if(name == document["name"]):
+                target_document = document
+                break
+        #print("Document:", target_document, "\n\n\n")
+        filename = bili_to_csv(target_document)
         self.write({"filename":filename})
 
 class SearchByIdHandler(tornado.web.RequestHandler):
@@ -87,6 +103,9 @@ class SearchByIdHandler(tornado.web.RequestHandler):
         data = urllib.parse.parse_qs(self.request.query)
         num = int(data["idNum"][0])
         document = await db.patients.find_one({"id":num})
+        #print("Document before:", document, "\n\n\n\n")
+        NameDecrypter(document)
+        #print("Document After:", document, "\n\n\n\n")
         filename = bili_to_csv(document)
         self.write({"filename":filename})
 
@@ -95,8 +114,12 @@ class SearchByEthnicityHandler(tornado.web.RequestHandler):
         data = urllib.parse.parse_qs(self.request.query)
         ethnicities = [x.title() for x in data["ethnicities[]"]]
         cursor = db.patients.find({"ethnicity":{"$in":ethnicities}})
-        document = await cursor.to_list(length=100)
-        filename = bili_to_csv(document)
+        documents = await cursor.to_list(length=100)
+        #print("Documents before:", documents, "\n\n\n\n")
+        for document in documents:
+            NameDecrypter(document)
+        #print("Documents After:", documents, "\n\n\n\n")
+        filename = bili_to_csv(documents)
         self.write({"filename":filename})
 
 class SearchByDateHandler(tornado.web.RequestHandler):
@@ -104,13 +127,15 @@ class SearchByDateHandler(tornado.web.RequestHandler):
         data = urllib.parse.parse_qs(self.request.query)
         date1 = data["date1"][0]
         date2 = data["date2"][0]
-        # In MongoDB, db.YOURCOLLECTION.update({"username":A NAME}, {$set:{"date":new Date("YYYY-MM-DD")}})
-        # Or simply insert new accounts with the new Date object. First db.YOURCOLLECTION.remove({}) to delete ALL documents in the collection
         date1 = datetime.datetime.strptime(date1, "%m/%d/%Y")
         date2 = datetime.datetime.strptime(date2, "%m/%d/%Y")
         cursor = db.patients.find({"date":{"$gt":date1, "$lt":date2}})
-        document = await cursor.to_list(length=100)
-        filename = bili_to_csv(document)
+        documents = await cursor.to_list(length=100)
+        #print("Documents before:", documents, "\n\n\n\n")
+        for document in documents:
+            NameDecrypter(document)
+        #print("Documents After:", documents, "\n\n\n\n")
+        filename = bili_to_csv(documents)
         self.write({"filename":filename})
 
 class AccountHandler(BaseHandler):
@@ -200,6 +225,12 @@ def json_to_csv(json_obj):
     image = json_obj['images']
     csv_txt = name + "," + str(p_id) + "," + str(bilirubin) + "," + ethnicity + "," + date + "," + image + "\n"
     return csv_txt
+
+def NameDecrypter(document):
+    encrypted_name = document["name"]
+    f = Fernet(key.encode())
+    name = f.decrypt(encrypted_name.encode())
+    document["name"] = name.decode()
 
 settings = {
     "template_path":os.path.dirname(os.path.realpath(__file__)) + "/website/",
