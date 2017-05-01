@@ -2,11 +2,11 @@
 # users are encouraged to overload functions as needed.
 
 import tornado.web
+import motor
 import tornado.ioloop
-from sklearn import linear_model
 import pickle
 import pymongo
-import gridfs
+import numpy as np
 
 class Opylearn:
 
@@ -59,9 +59,10 @@ class Opylearn:
                 data = {}
                 for k in self.request.arguments:
                     data[k] = self.get_argument(k)
-                self.write(outer_self.model.predict(np.asarray(data.values())))
-                outer_self.model.db.unlabeled_data.insert_one(data)
-                
+                feature_vector = np.fromiter(iter(data.values()), dtype=float)
+                print(feature_vector)
+                self.write(np.array_str(outer_self.model.predict(feature_vector)))
+                outer_self.db.unlabeled_data.insert_one(data)
 
         class InsertHandler(tornado.web.RequestHandler):
             def get(self):
@@ -99,4 +100,5 @@ class Opylearn:
 
 obj = Opylearn()
 obj.load_model()
+obj.db = motor.motor_tornado.MotorClient().bili
 obj.start_webserver()
