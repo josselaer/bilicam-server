@@ -51,11 +51,10 @@ class Opylearn:
     # Start running instance of server
     def start_webserver(self):
         outer_self = self
-        #async
+        # #async
         class PredictHandler(tornado.web.RequestHandler):
             def get(self):
                 self.write("test")
-                #return json
             def post(self):
                 data = {}
                 for k in self.request.arguments:
@@ -76,19 +75,28 @@ class Opylearn:
                 outer_self.db.data.insert_one(data)
 
 
+        class MainHandler(tornado.web.RequestHandler):
+            def get(self):
+                self.write("Hello, world")
+
         def make_app():
             return tornado.web.Application([
-                (r"/", PredictHandler),
-                (r"/insert/", InsertHandler)
+                (r"/", MainHandler),
+                (r"/predict", PredictHandler),
+                (r"/insert", InsertHandler)
             ])
+
+        
         app = make_app()
-        app.listen(8887)
-        tornado.IOloop.current().start()
+        app.listen(8881)
+        tornado.ioloop.IOLoop.current().start()
 
-    def add_path(handler, path):
-        ##
-        return
 
-    def connect_to_database(host, port, path_to_database):
+
+    def connect_to_database(self, dbname):
         client = MongoClient(host, port)
         self.db = client[path_to_database]
+
+obj = Opylearn()
+obj.load_model()
+obj.start_webserver()
