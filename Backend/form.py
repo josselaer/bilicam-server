@@ -176,7 +176,7 @@ class LogoutHandler(tornado.web.RequestHandler):
 
 def bili_to_csv(json_obj):
     filename = str(randint(100,999999)) + ".csv"
-    csv_txt = "Name,ID,Bilirubin Value,Ethnicity,Date,Images\n"
+    csv_txt = "Name,ID,Bilirubin Value,Ethnicity,Date\n"
     if(type(json_obj) == list):
         for x in json_obj:
             csv_txt = csv_txt + json_to_csv(x)
@@ -196,9 +196,8 @@ def json_to_csv(json_obj):
     p_id = json_obj['id']
     bilirubin = json_obj['bilirubin']
     ethnicity = json_obj['ethnicity']
-    date = "1/1/95" #json_obj['date']
-    image = json_obj['images']
-    csv_txt = name + "," + str(p_id) + "," + str(bilirubin) + "," + ethnicity + "," + date + "," + image + "\n"
+    date =  str(json_obj['date'])
+    csv_txt = name + "," + str(p_id) + "," + str(bilirubin) + "," + ethnicity + "," + date + "\n"
     return csv_txt
 
 settings = {

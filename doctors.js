@@ -14,3 +14,5 @@ db.doctors.insert({"username" : "john2", "password" : "password", "name" : "John
 db.doctors.insert({"username" : "james", "password" : "password", "name" : "James Doe", "hospital": "Sacred Heart", "hospitalAddress": "123 E Fake st", "city": "Dallas, TX" })
 db.doctors.insert({"username" : "jane", "password" : "password", "name" : "Jane Doe", "hospital": "Baylor Hospital", "hospitalAddress": "876 W Baylor", "city": "Waco, TX" })
 db.doctors.insert({"username" : "john3", "password" : "password", "name" : "John Doe", "hospital": "Greys Anatomy", "hospitalAddress": "8932 N Grey Blvd", "city": "Fort Worth, TX" })
+
+#db.doctors.insert({"city" : "Dallas, TX", "password" : "$2b$12$wTLPwOZfCaU0p.gKnbX5Iusf1eIFps/bf1epiUGM1OoweaKz1U7qy", "hospitalAddress" : "123 E Fake St", "name" : "Jake Osselaer", "username" : "jaketest", "hospital" : "Sacred Heart", "salt" : "$2b$12$wTLPwOZfCaU0p.gKnbX5Iu" })
