@@ -449,11 +449,13 @@ function search_patient() {
       for(var i = 0; i < data.length; i++) {
         add_table_row(data[i]);
       }
+      $("#dr_results_table").css("display", "block");
     }
     else { //search by user
-      add_table_row(data);
-    }
+      add_table_row(data[0]);
       $("#dr_results_table").css("display", "block");
+    }
+      
 
   }
 
@@ -464,7 +466,6 @@ function search_patient() {
     var td1 = document.createElement('td');
     var td2 = document.createElement('td');
 
-    //console.log(data);
     var dr_username = data['username'];
     var dr_name = data['name'];
 

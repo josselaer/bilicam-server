@@ -53,8 +53,11 @@ class SearchByNameHandler(BaseHandler):
     async def get(self):
         data = urllib.parse.parse_qs(self.request.query)
         name = data["name"][0]
+        print(name)
         cursor = db.doctors.find({"name":name})
+        print(cursor)
         document = await cursor.to_list(length=100)
+        #print(document)
         if document != None:
             dataToSend = []
             for x in document:
@@ -66,6 +69,7 @@ class SearchByNameHandler(BaseHandler):
             #elf.set_cookie("hospital", str(document["hospital"]).replace(" ", "|"))
             #self.set_cookie("hospitalAddress", str(document["hospitalAddress"]).replace(" ", "|"))
             #self.set_cookie("city", str(document["city"]).replace(" ", "|"))
+            print(dataToSend)
             self.write(json.dumps(dataToSend))
 
 class LoadAccountInfoHandler(BaseHandler):
